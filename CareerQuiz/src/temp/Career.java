@@ -1,5 +1,5 @@
-
 package temp;
+
 public abstract class Career {
     protected String[] answers;
     protected int points;

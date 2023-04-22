@@ -1,12 +1,15 @@
 package temp;
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.util.*;
 
 public class Narrow {
     private JFrame frame;
     private JPanel panel;
     private JLabel result;
+    private JButton continueButton;
 
     private Engineering engineering;
     private Healthcare healthcare;
@@ -16,6 +19,8 @@ public class Narrow {
     private Education education;
     private Technology technology;
     private Law law;
+
+    private Career[] careers;
 
     public Narrow(String[] answers) {
         engineering = new Engineering(answers);
@@ -28,31 +33,50 @@ public class Narrow {
         law = new Law(answers);
 
         frame = new JFrame("Top 3 Career Options");
+        frame.setIconImage(new ImageIcon("C:/Users/Arshi/git/CareerQuiz/CareerQuiz/src/temp/Icon.png").getImage());
         frame.setSize(400, 200);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
         panel = new JPanel();
-        frame.add(panel);
-        panel.setLayout(new GridLayout(4, 1));
-
+        panel.setBackground(new Color(0, 255, 255));
+        frame.getContentPane().add(panel);
+        panel.setLayout(new GridBagLayout());
+        GridBagConstraints c = new GridBagConstraints();
+        GridBagConstraints b = new GridBagConstraints();
+        
         result = new JLabel("Top 3 Career Options:");
-        panel.add(result);
+        c.gridx = 0;
+        c.gridy = 0;
+        panel.add(result, b);
 
         getTopThree();
+
+        continueButton = new JButton("Continue");
+        c.gridx = 1;
+        c.gridy = 3;
+        panel.add(continueButton, c);
+        continueButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                FinalNarrow finalNarrow = new FinalNarrow(careers[0], careers[1], careers[2]);
+                frame.dispose();
+            }
+        });
 
         frame.setVisible(true);
     }
 
     private void getTopThree() {
-        Career[] careers = {engineering, healthcare, business, art, trades, education, technology, law};
+        careers = new Career[]{engineering, healthcare, business, art, trades, education, technology, law};
         Arrays.sort(careers, Comparator.comparingInt(Career::getPoints).reversed());
-    
-        JLabel first = new JLabel("1. " + careers[0].getClass().getSimpleName());
-        JLabel second = new JLabel("2. " + careers[1].getClass().getSimpleName());
-        JLabel third = new JLabel("3. " + careers[2].getClass().getSimpleName());
-    
-        panel.add(first);
-        panel.add(second);
-        panel.add(third);
+
+        GridBagConstraints c = new GridBagConstraints();
+        c.gridx = 0;
+
+        for (int i = 0; i < 3; i++) {
+            c.gridy = i + 1;
+            JLabel option = new JLabel((i + 1) + ". " + careers[i].getClass().getSimpleName());
+            panel.add(option, c);
+        }
     }
 }
